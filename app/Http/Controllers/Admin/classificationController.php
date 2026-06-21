@@ -12,11 +12,18 @@ class classificationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+
+    $classifications = Classi::when($search, function ($query, $search) {
+            $query->where('name', 'LIKE', "%$search%");
+        })->get();
+
+    return view('Admin.Classification.index', compact('classifications', 'search'));
         //
-        $classifications = Classi::all();
-        return view('Admin.Classification.index',compact('classifications'));
+        //$classifications = Classi::all();
+        //return view('Admin.Classification.index',compact('classifications'));
     }
 
     /**

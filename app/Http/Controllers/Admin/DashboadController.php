@@ -17,6 +17,7 @@ class DashboadController extends Controller
        $type=Type::count();
        $categories=Category::count();
        $chartlabels=Classi::pluck('name');
+       // pluck collect categories as chartlabels
        $chartValuuse=Classi::withCount('categories')->pluck('categories_count');
         return view('admin.dashboard.index',compact(['classifications','type','categories','chartlabels','chartValuuse']));
     }

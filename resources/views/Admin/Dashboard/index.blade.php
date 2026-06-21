@@ -1,78 +1,104 @@
+<!-- admin/dashboard/index.blade.php -->
 @extends('layout.dashboard')
 
 @section('content')
-
-<div class="container mt-4">
-
-    <h2 class="mb-4">Dashboard Overview</h2>
-
-    <!-- Stats Cards -->
-    <div class="row">
-
-        <!-- Classifications -->
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center p-3 border-0 bg-primary text-white">
-                <h4>Classifications</h4>
-                <h2>{{ $classifications }}</h2>
-                <i class="fa fa-list fa-2x mt-2"></i>
+<div class="container-fluid">
+    <div class="top-bar-royal mb-4">
+        <div>
+            <h1 class="page-title-royal mb-2">Dashboard Overview</h1>
+            <div class="breadcrumb-royal">
+                <a href="{{ route('dashboard.index') }}">Home</a>
+                <span class="separator">/</span>
+                <span>Dashboard</span>
             </div>
-        </div>
-
-        <!-- Types -->
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center p-3 border-0 bg-success text-white">
-                <h4>Types</h4>
-                <h2>{{ $type }}</h2>
-                <i class="fa fa-tags fa-2x mt-2"></i>
-            </div>
-        </div>
-
-        <!-- Categories -->
-        <div class="col-md-4">
-            <div class="card shadow-sm text-center p-3 border-0 bg-warning text-white">
-                <h4>Categories</h4>
-                <h2>{{ $categories }}</h2>
-                <i class="fa fa-folder-open fa-2x mt-2"></i>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Chart Section -->
-    <div class="card mt-5 shadow-sm">
-        <div class="card-body">
-            <h4 class="mb-3">Categories per Classification</h4>
-            <canvas id="myChart" height="110"></canvas>
         </div>
     </div>
 
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-royal">
+                <div class="stat-icon-royal primary mb-3">
+                    <i class="fas fa-list-ol"></i>
+                </div>
+                <h6 class="text-muted mb-1">Classifications</h6>
+                <h2 class="fw-bold mb-0">{{ $classifications }}</h2>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="stat-royal">
+                <div class="stat-icon-royal mb-3" style="background: linear-gradient(135deg, var(--purple-400), #A78BFA);">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <h6 class="text-muted mb-1">Types</h6>
+                <h2 class="fw-bold mb-0">{{ $type }}</h2>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="stat-royal">
+                <div class="stat-icon-royal mb-3" style="background: linear-gradient(135deg, #D946EF, #C026D3);">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <h6 class="text-muted mb-1">Categories</h6>
+                <h2 class="fw-bold mb-0">{{ $categories }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="royal-card">
+        <h5 class="fw-bold mb-4">Categories per Classification</h5>
+        <div style="height: 300px;">
+            <canvas id="classificationChart"></canvas>
+        </div>
+    </div>
 </div>
 
-<!-- Chart.js CDN -->
+@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    const ctx = document.getElementById('myChart');
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: {!! json_encode($chartlabels) !!},
-            datasets: [{
-                label: 'Categories Count',
-                data: {!! json_encode($chartValuuse) !!},
-                borderWidth: 1,
-                backgroundColor: '#0d6efd',
-                borderColor: '#0b5ed7',
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true }
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('classificationChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @json($chartlabels),
+                datasets: [{
+                    label: 'Categories Count',
+                    data: @json($chartValuuse),
+                    backgroundColor: 'rgba(115, 193, 108, 0.7)',
+                    borderColor: 'rgba(115, 193, 108, 0.7)',
+                    borderWidth: 1,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
             }
-        }
+        });
     });
 </script>
-
+@endsection
 @endsection

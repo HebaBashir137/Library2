@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use  App\Models\Category;
 use App\Models\Type;
 
 
@@ -12,11 +13,24 @@ class typeController extends Controller
     /**
      * Display a listing of the resource.
      */
-      public function index()
+      public function index(Request $request)
     {
         //
-        $types = Type::all();
-        return view('Admin.Type.index',compact('types'));
+        //$types = Type::with('category')->get();
+        //return view('Admin.Type.index',compact('types'));
+        $search = $request->input('search');
+
+    $types = Type::with('category')
+        ->when($search, function ($query, $search) {
+            $query->where('name', 'LIKE', "%$search%")
+                  ->orWhere('edition', 'LIKE', "%$search%")
+                  ->orWhereHas('category', function ($q) use ($search) {
+                      $q->where('name', 'LIKE', "%$search%");
+                  });
+        })
+        ->get();
+
+    return view('Admin.Type.index', compact('types', 'search'));
     }
 
     /**
@@ -24,7 +38,7 @@ class typeController extends Controller
      */
     public function create()
 {
-    $categories = \App\Models\Category::all();
+    $categories = Category::all();
     return view('Admin.Type.create', compact('categories'));
 }
 
@@ -58,8 +72,8 @@ class typeController extends Controller
      */
    public function edit(Type $type)
 {
-    $categories = \App\Models\Category::all();
-    return view('Admin.Type.edit', compact('type', 'categories'));
+    $categories = Category::all();
+    return view('Admin.Type.edit', compact(['type', 'categories']));
 }
 
 

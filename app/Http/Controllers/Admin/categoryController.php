@@ -12,11 +12,21 @@ class categoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-     public function index()
+     public function index(Request $request)
     {
+
+        
+    $search = $request->input('search');
+
+    $categories = Category::when($search, function ($query, $search) {
+            $query->where('name', 'LIKE', "%$search%");
+        })
+        ->get();
+
+    return view('Admin.Category.index', compact('categories', 'search'));
         //
-        $categories = Category::all();
-        return view('Admin.Category.index',compact('categories'));
+        //$categories = Category::all();
+        //return view('Admin.Category.index',compact('categories'));
         //categories here is relation
         //get collection of objects 
     }

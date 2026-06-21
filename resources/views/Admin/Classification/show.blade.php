@@ -5,13 +5,13 @@
 
     <h2>Classification Details</h2>
 
-    <a href="{{ route('admin.classifications.index') }}" class="btn btn-secondary mb-3">Back</a>
+    <a href="{{ route('classifications.index') }}" class="btn btn-secondary mb-3">Back</a>
 
     <div class="card">
         <div class="card-header bg-dark text-white">
             Classification Information
         </div>
-        <div class="card-body">
+        <div clazss="card-body">
             <p><strong>ID:</strong> {{ $classification->id }}</p>
             <p><strong>Name:</strong> {{ $classification->name }}</p>
             <p><strong>Created At:</strong> {{ $classification->created_at->format('Y-m-d') }}</p>
